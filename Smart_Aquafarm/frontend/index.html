@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaterWise AI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <div class="brand">💧 WaterWise AI</div>
+        <div class="brand-sub">ผู้ช่วยวางแผนบริหารจัดการน้ำสำหรับเกษตรกร</div>
+      </div>
+      <button class="header-btn" id="profileBtn">👤</button>
+    </header>
+
+    <main id="app"></main>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-page="home"><span>⌂</span>หน้าหลัก</button>
+      <button class="nav-item" data-page="water"><span>💧</span>น้ำฝน</button>
+      <button class="nav-item" data-page="risk"><span>◷</span>วิเคราะห์</button>
+      <button class="nav-item" data-page="history"><span>📊</span>ประวัติ</button>
+      <button class="nav-item" data-page="profile"><span>♙</span>โปรไฟล์</button>
+    </nav>
+  </div>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
