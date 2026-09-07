@@ -1,0 +1,92 @@
+{
+  "model": "RandomForestClassifier",
+  "target": "drought_risk",
+  "classes": [
+    "ต่ำ",
+    "ปานกลาง",
+    "รุนแรง",
+    "สูง"
+  ],
+  "train_rows": 6615,
+  "test_rows": 3285,
+  "train_period": "2023-01-01 to 2024-12-31",
+  "test_period": "2025-01-01 to 2025-12-31",
+  "features": [
+    "province",
+    "river_basin",
+    "station_id",
+    "month",
+    "temperature_c",
+    "rainfall_mm",
+    "consecutive_dry_days",
+    "soil_moisture_index"
+  ],
+  "accuracy": 0.9990867579908675,
+  "balanced_accuracy": 0.9727477477477477,
+  "classification_report": {
+    "ต่ำ": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 2729.0
+    },
+    "ปานกลาง": {
+      "precision": 0.9976525821596244,
+      "recall": 1.0,
+      "f1-score": 0.9988249118683902,
+      "support": 425.0
+    },
+    "รุนแรง": {
+      "precision": 1.0,
+      "recall": 0.9,
+      "f1-score": 0.9473684210526315,
+      "support": 20.0
+    },
+    "สูง": {
+      "precision": 0.9821428571428571,
+      "recall": 0.990990990990991,
+      "f1-score": 0.9865470852017937,
+      "support": 111.0
+    },
+    "accuracy": 0.9990867579908675,
+    "macro avg": {
+      "precision": 0.9949488598256204,
+      "recall": 0.9727477477477477,
+      "f1-score": 0.9831851045307038,
+      "support": 3285.0
+    },
+    "weighted avg": {
+      "precision": 0.9990929085420693,
+      "recall": 0.9990867579908675,
+      "f1-score": 0.9990729626856978,
+      "support": 3285.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      2729,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      425,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      18,
+      2
+    ],
+    [
+      0,
+      1,
+      0,
+      110
+    ]
+  ],
+  "note": "This dataset's drought_risk label is strongly aligned with consecutive_dry_days/soil_moisture_index, so the very high score should not be treated as real-world field accuracy."
+}
