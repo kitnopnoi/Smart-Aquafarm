@@ -1,4 +1,20 @@
+"""
+WaterWise AI - Backend Server
+=============================
+Serves the frontend (WaterWise UI) and exposes /api/analyze, which:
+  1. Takes the user's GPS coordinates (and optional catchment/runoff settings)
+  2. Reverse-geocodes the location (Nominatim / OpenStreetMap)
+  3. Pulls a real weather forecast + recent rainfall history (Open-Meteo, free, no API key)
+  4. Derives the model's input features (rainfall, temperature, consecutive dry days,
+     soil moisture, province/river basin/station) from that real data
+  5. Runs the trained RandomForest model (waterwise_drought_rf.joblib) to get a
+     drought-risk prediction for today and a short-term trend
 
+Run:
+    pip install -r requirements.txt
+    python app.py
+Then open http://localhost:5000 in a browser (needs internet access for weather/geocoding).
+"""
 from __future__ import annotations
 
 import math
@@ -444,4 +460,11 @@ def static_files(path):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # Render (and most hosts) inject the port to bind via the PORT env var;
+    # 5000 stays the default for running locally. debug stays off unless
+    # FLASK_DEBUG=1 is set, since Flask's debugger must never be exposed
+    # on a public deployment.
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    debug = os.environ.get("FLASK_DEBUG") == "1"
+    app.run(host="0.0.0.0", port=port, debug=debug)
