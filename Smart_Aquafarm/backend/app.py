@@ -30,8 +30,10 @@ from flask import Flask, jsonify, request, send_from_directory
 BASE_DIR = Path(__file__).resolve().parent
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
 
-MODEL_PATH = BASE_DIR / "waterwise_drought_rf.joblib"
-MODEL = joblib.load(MODEL_PATH)
+MODEL_PATH = BASE_DIR / "smart_aquafarm_drought_model.joblib"
+MODEL_BUNDLE = joblib.load(MODEL_PATH)
+MODEL = MODEL_BUNDLE["model"] if isinstance(MODEL_BUNDLE, dict) and "model" in MODEL_BUNDLE else MODEL_BUNDLE
+MODEL_FEATURES = MODEL_BUNDLE.get("features", ["month", "temperature_c", "rainfall_mm", "consecutive_dry_days", "soil_moisture_index"]) if isinstance(MODEL_BUNDLE, dict) else ["month", "temperature_c", "rainfall_mm", "consecutive_dry_days", "soil_moisture_index"]
 DB_PATH = BASE_DIR / "waterwise.db"
 
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
@@ -286,21 +288,21 @@ def fetch_recent_dry_days(lat: float, lon: float) -> int:
 def predict_risk(province: str, river_basin: str, station_id: str, month: int,
                   temperature_c: float, rainfall_mm: float,
                   consecutive_dry_days: int, soil_moisture_index: float) -> dict:
+    # โมเดลใหม่ฝึกด้วยตัวแปร 5 ตัวเท่านั้น
     row = pd.DataFrame([{
-        "province": province,
-        "river_basin": river_basin,
-        "station_id": station_id,
         "month": int(month),
         "temperature_c": float(temperature_c),
         "rainfall_mm": float(rainfall_mm),
         "consecutive_dry_days": int(consecutive_dry_days),
         "soil_moisture_index": float(soil_moisture_index),
-    }])
-    pred = MODEL.predict(row)[0]
+    }], columns=MODEL_FEATURES)
+    pred = str(MODEL.predict(row)[0])
     probs = dict(zip(MODEL.classes_, MODEL.predict_proba(row)[0]))
+    labels = {"low": "ต่ำ", "medium": "ปานกลาง", "high": "สูง", "severe": "รุนแรง",
+              "ต่ำ": "ต่ำ", "ปานกลาง": "ปานกลาง", "สูง": "สูง", "รุนแรง": "รุนแรง"}
     return {
-        "risk": str(pred),
-        "probabilities": {str(k): round(float(v), 4) for k, v in probs.items()},
+        "risk": labels.get(pred, pred),
+        "probabilities": {labels.get(str(k), str(k)): round(float(v), 4) for k, v in probs.items()},
     }
 
 
